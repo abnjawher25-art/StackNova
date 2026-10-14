@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   },
   description:
     "طبّق مهارات HTML وCSS وJavaScript عبر أفكار مشاريع ويب عملية مناسبة للمبتدئين.",
+  alternates: { canonical: "/projects" },
 };
 
 export default function ProjectsLayout({ children }: Readonly<{ children: React.ReactNode }>) {
