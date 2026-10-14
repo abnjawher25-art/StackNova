@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: RouteProps): Promise<Metadata
     };
   }
 
-  const title = `${lesson.title} — درس ${c.label} عملي`;
+  const title = `${lesson.title} — درس JavaScript عملي`;
   return {
     title,
     description: lesson.summary,
