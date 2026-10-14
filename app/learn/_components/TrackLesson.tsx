@@ -8,6 +8,13 @@ import { getProgress, saveProgress, type TrackKey } from "@/lib/curriculum/types
 
 type Props = { trackKey: TrackKey };
 type GamePiece = { id: number; line: string };
+type ChallengeMode = "repair" | "build" | "project";
+
+function getChallengeMode(lessonNumber: number, trackKey: TrackKey): ChallengeMode {
+  const offset = trackKey === "html" ? 0 : trackKey === "css" ? 1 : 2;
+  const modes: ChallengeMode[] = ["repair", "build", "project"];
+  return modes[(lessonNumber - 1 + offset) % modes.length];
+}
 
 function formatExample(source: string, trackKey: TrackKey): string[] {
   const trimmed = source.trim();
@@ -93,6 +100,9 @@ export default function TrackLesson({ trackKey }: Props) {
   const [dragWon, setDragWon] = useState(false);
   const [quizChoice, setQuizChoice] = useState<number | null>(null);
   const [quizChecked, setQuizChecked] = useState(false);
+  const [challengeCode, setChallengeCode] = useState("");
+  const [challengeFeedback, setChallengeFeedback] = useState("");
+  const [challengeSuccess, setChallengeSuccess] = useState(false);
 
 
   useEffect(() => {
@@ -102,8 +112,16 @@ export default function TrackLesson({ trackKey }: Props) {
     setLoaded(true);
   }, [lesson?.id]);
   useEffect(() => { setCode(starterCode); setFixCode(makeBrokenCode(lesson?.example ?? "")); }, [lesson?.id, starterCode]);
+  useEffect(() => {
+    if (!lesson) return;
+    const mode = getChallengeMode(lesson.number, trackKey);
+    setChallengeCode(mode === "repair" ? makeBrokenCode(lesson.example) : formatExample(lesson.example, trackKey).join("\\n"));
+    setChallengeFeedback("");
+    setChallengeSuccess(false);
+  }, [lesson?.id, trackKey]);
 
   const index = lesson ? lesson.number - 1 : -1;
+  const challengeMode = lesson ? getChallengeMode(lesson.number, trackKey) : "build";
   const unlocked = loaded && !!lesson && isLessonUnlocked(track, index, progress);
   const mastered = !!lesson && progress[lesson.id]?.mastered === true;
   const next = lesson ? track.lessons[lesson.number] : undefined;
@@ -128,7 +146,7 @@ export default function TrackLesson({ trackKey }: Props) {
   }, [lesson, track]);
 
 
-  function completeLessonFromGame() {
+  function completeLessonFromGame(successMessage = "رائع! حللت اللعبة بنجاح، وأُتقنت المهمة وفتح الدرس التالي مباشرةً.") {
     if (!lesson || mastered) return;
     const nextAttempts = (progress[lesson.id]?.attempts ?? 0) + 1;
     const updated = {
@@ -140,7 +158,7 @@ export default function TrackLesson({ trackKey }: Props) {
     saveProgress(updated);
     setReward(true);
     setShowRecovery(false);
-    setMessage("رائع! حللت اللعبة بنجاح، وأُتقنت المهمة وفتح الدرس التالي مباشرةً.");
+    setMessage(successMessage);
   }
 
   function checkMastery() {
@@ -158,6 +176,39 @@ export default function TrackLesson({ trackKey }: Props) {
     } else {
       setMessage("لم يكتمل الإتقان بعد. عدّل المثال بنفسك، وتأكد من وجود العناصر أو الخصائص المطلوبة ثم أعد المحاولة.");
       setShowHint(true);
+    }
+  }
+
+  function checkChallenge() {
+    if (!lesson || !regex) return;
+    const normalize = (value: string) => value.replace(/\\s+/g, "");
+    let success = false;
+
+    if (challengeMode === "repair") {
+      success = normalize(challengeCode) === normalize(lesson.example);
+    } else if (challengeMode === "build") {
+      success = challengeCode.trim().length > 0 && regex.test(challengeCode);
+    } else {
+      success = challengeCode.trim().length > lesson.example.trim().length && regex.test(challengeCode);
+    }
+
+    setChallengeSuccess(success);
+    setChallengeFeedback(success
+      ? challengeMode === "repair"
+        ? "أحسنت! أصلحت الخطأ في المثال. انتقل إلى المهمة التالية."
+        : challengeMode === "build"
+          ? "ممتاز! نفّذت المتطلب الأساسي للتحدي."
+          : "رائع! وسّعت المثال إلى مشروع مصغّر مع الحفاظ على الفكرة المطلوبة."
+      : challengeMode === "repair"
+        ? "ما زال هناك اختلاف عن الكود الصحيح. راجع الأقواس والوسوم والرموز."
+        : challengeMode === "build"
+          ? "لم يتحقق المتطلب بعد. طبّق الفكرة الأساسية للدرس ثم أعد الفحص."
+          : "أضف تطويرًا حقيقيًا إلى المثال، وتأكد من بقاء الفكرة الأساسية صحيحة.");
+
+    if (success) {
+      completeLessonFromGame("أحسنت! أنجزت تحدي هذه المرحلة بنجاح.");
+      setReward(true);
+      setShowRecovery(false);
     }
   }
 
@@ -278,7 +329,35 @@ export default function TrackLesson({ trackKey }: Props) {
           </div>}
         </article>
 
-        <article className="panel lesson-stage"><span className="stage-label">المرحلة 5 · أتقن</span><h2>التحدي النهائي</h2><p>{lesson.challenge}</p><div className="mastery-question"><strong>سؤال المراجعة</strong><p>{lesson.question}</p><details><summary>إظهار الإجابة والتفسير</summary><p>{lesson.answer}</p></details></div><button className="text-link recovery-toggle" onClick={() => setShowRecovery((value) => !value)}>{showRecovery ? "إخفاء خطة المراجعة" : "احتجت إلى مساعدة؟ افتح خطة المراجعة"}</button>{showRecovery && <div className="hint-box"><strong>خطة معالجة الخطأ</strong><p>{lesson.recovery}</p></div>}{mastered && <div className="status success" role="status">✓ هذا الدرس متقن ومحفوظ في تقدمك.</div>}{mastered && next && <Link className="button button-primary next-lesson" href={"/learn/" + trackKey + "/" + next.slug}>افتح الدرس التالي: {next.title} ↗</Link>}{mastered && !next && <div className="status success">أكملت الجزيرة! {trackKey !== "javascript" ? <Link className="text-link" href={trackKey === "html" ? "/learn/css" : "/learn/javascript"}>افتح الجزيرة التالية ↗</Link> : "أنهيت المسارات الثلاثة. راجع تقدمك وابدأ مشروعًا مستقلًا."}</div>}</article>
+        <article className="panel lesson-stage challenge-stage">
+          <span className="stage-label">المرحلة 5 · أتقن</span>
+          <h2>تحدي متغيّر حسب الدرس</h2>
+          <p>كل درس يقدم نوع مهمة مختلفًا بالتناوب، حتى تطبّق الفكرة بدل تكرار نفس السؤال دائمًا.</p>
+          <div className="game-instruction">
+            <span>{challengeMode === "repair" ? "01" : challengeMode === "build" ? "02" : "03"}</span>
+            <div>
+              <strong>{challengeMode === "repair" ? "تحدي اكتشاف الخطأ وإصلاحه" : challengeMode === "build" ? "تحدي تنفيذ متطلب" : "تحدي مشروع مصغّر"}</strong>
+              <p>{challengeMode === "repair"
+                ? `أصلح الكود المعطوب لدرس «${lesson.title}» وأعده إلى صيغة صحيحة.`
+                : challengeMode === "build"
+                  ? `اكتب أو عدّل الكود لتطبيق الفكرة: ${lesson.summary}`
+                  : `طوّر مثال «${lesson.title}» إلى مشروع مصغّر. أضف تحسينًا من عندك مع الحفاظ على الفكرة الأساسية: ${lesson.summary}`}</p>
+            </div>
+          </div>
+          <label htmlFor="final-challenge-editor" className="editor-label">مساحة حل التحدي</label>
+          <textarea id="final-challenge-editor" className="lesson-editor" value={challengeCode} spellCheck={false} onChange={(event) => { setChallengeCode(event.target.value); setChallengeFeedback(""); setChallengeSuccess(false); }} />
+          <div className="editor-actions">
+            <button type="button" className="button button-primary" onClick={checkChallenge}>تحقق من حل التحدي</button>
+            <button type="button" className="button button-ghost" onClick={() => { setChallengeCode(challengeMode === "repair" ? makeBrokenCode(lesson.example) : formatExample(lesson.example, trackKey).join("\\n")); setChallengeFeedback(""); setChallengeSuccess(false); }}>إعادة التحدي</button>
+          </div>
+          {challengeFeedback && <div className={challengeSuccess ? "status success" : "status"} role="status">{challengeFeedback}</div>}
+          <div className="mastery-question"><strong>سؤال مراجعة المفهوم</strong><p>{lesson.question}</p><details><summary>إظهار الإجابة والتفسير</summary><p>{lesson.answer}</p></details></div>
+          <button className="text-link recovery-toggle" onClick={() => setShowRecovery((value) => !value)}>{showRecovery ? "إخفاء خطة المراجعة" : "احتجت إلى مساعدة؟ افتح خطة المراجعة"}</button>
+          {showRecovery && <div className="hint-box"><strong>خطة معالجة الخطأ</strong><p>{lesson.recovery}</p></div>}
+          {mastered && <div className="status success" role="status">✓ هذا الدرس متقن ومحفوظ في تقدمك.</div>}
+          {mastered && next && <Link className="button button-primary next-lesson" href={"/learn/" + trackKey + "/" + next.slug}>افتح الدرس التالي: {next.title} ↗</Link>}
+          {mastered && !next && <div className="status success">أكملت الجزيرة! {trackKey !== "javascript" ? <Link className="text-link" href={trackKey === "html" ? "/learn/css" : "/learn/javascript"}>افتح الجزيرة التالية ↗</Link> : "أنهيت المسارات الثلاثة. راجع تقدمك وابدأ مشروعًا مستقلًا."}</div>}
+        </article>
       </div>
     </main><footer className="footer"><div className="container"><Link href={"/learn/" + trackKey}>العودة إلى خريطة الجزيرة ↗</Link></div></footer>
   </>;
