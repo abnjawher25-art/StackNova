@@ -13,7 +13,7 @@ export default function HtmlRoadmapPage() {
       <header className="site-header">
         <div className="container nav">
           <Link className="brand" href="/"><span className="brand-mark">S</span><span>StackNova</span></Link>
-          <nav className="nav-links"><Link href="/">الرئيسية</Link><Link href="/learn/html">درس HTML</Link></nav>
+          <nav className="nav-links"><Link href="/">الرئيسية</Link><Link href="/learn/html">درس HTML</Link><Link href="/learn/html/progress">تقدّمي</Link></nav>
           <Link className="button button-primary nav-cta" href="/learn/html">ابدأ الدرس الأول</Link>
         </div>
       </header>
