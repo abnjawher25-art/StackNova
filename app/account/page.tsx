@@ -44,7 +44,7 @@ export default function AccountPage() {
           password,
           options: {
             data: { full_name: name.trim() },
-            emailRedirectTo: \u0060${window.location.origin}/account\u0060,
+            emailRedirectTo: window.location.origin + "/account",
           },
         });
         if (error) throw error;
