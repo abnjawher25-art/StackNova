@@ -59,7 +59,7 @@ const lessons: Record<string, Lesson> = {
 };
 const sampleHtml = `<main class="demo"><span class="tag">STACKNOVA · JAVASCRIPT</span><h1>جرّب التفاعل</h1><p>اكتب الكود ثم اضغط الزر في المعاينة.</p><button id="action">جرّب الآن</button><p id="result" class="result">ستظهر النتيجة هنا</p></main>`;
 function makePreview(code: string) {
-  const safeCode = code.replace(/<\\/script/gi, "<\\\\/script");
+  const safeCode = code;
   return `<!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;margin:0;padding:20px;background:#fff;color:#24113d}.demo{max-width:560px;margin:auto;padding:22px;border:1px solid #ddd6fe;border-radius:16px;background:#faf8ff}.tag{font-size:11px;letter-spacing:1px;color:#7c3aed}h1{font-size:24px}p{line-height:1.7}button{border:0;border-radius:8px;padding:11px 16px;background:#7c3aed;color:white;cursor:pointer}.result{margin-top:20px;padding:12px;background:#ede9fe;border-radius:8px;min-height:42px}</style><body>${sampleHtml}<script>try{\n${safeCode}\n}catch(error){document.querySelector("#result").textContent="خطأ: "+error.message}</script></body></html>`;
 }
 export default function JavaScriptLessonPage() {
