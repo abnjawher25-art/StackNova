@@ -1,6 +1,12 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "تعلم البرمجة وتطوير الويب بالعربية",
+  description:
+    "ابدأ رحلتك في تعلم HTML وCSS وJavaScript بالعربية عبر دروس عملية وتحديات وألعاب تعليمية ومشاريع للمبتدئين.",
+  alternates: { canonical: "/" },
+};
 
 const stars = [
   { x: "8%", y: "14%", delay: "0s", size: 2 }, { x: "18%", y: "72%", delay: "1.2s", size: 3 },
