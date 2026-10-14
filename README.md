@@ -62,3 +62,5 @@ Interactive code previews run in sandboxed iframes. The lesson challenges use li
 - The interface is Arabic-first.
 - Keep each new lesson focused on a small concept and an applied challenge.
 - Use a feature branch and pull request for changes; wait for the production build workflow to pass before merging.
+
+https://stack-nova-abnjawher25-8299.vercel.app
