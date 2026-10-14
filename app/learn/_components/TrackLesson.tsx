@@ -115,7 +115,7 @@ export default function TrackLesson({ trackKey }: Props) {
   useEffect(() => {
     if (!lesson) return;
     const mode = getChallengeMode(lesson.number, trackKey);
-    setChallengeCode(mode === "repair" ? makeBrokenCode(lesson.example) : formatExample(lesson.example, trackKey).join("\\n"));
+    setChallengeCode(mode === "repair" ? makeBrokenCode(lesson.example) : formatExample(lesson.example, trackKey).join("\n"));
     setChallengeFeedback("");
     setChallengeSuccess(false);
   }, [lesson?.id, trackKey]);
@@ -348,7 +348,7 @@ export default function TrackLesson({ trackKey }: Props) {
           <textarea id="final-challenge-editor" className="lesson-editor" value={challengeCode} spellCheck={false} onChange={(event) => { setChallengeCode(event.target.value); setChallengeFeedback(""); setChallengeSuccess(false); }} />
           <div className="editor-actions">
             <button type="button" className="button button-primary" onClick={checkChallenge}>تحقق من حل التحدي</button>
-            <button type="button" className="button button-ghost" onClick={() => { setChallengeCode(challengeMode === "repair" ? makeBrokenCode(lesson.example) : formatExample(lesson.example, trackKey).join("\\n")); setChallengeFeedback(""); setChallengeSuccess(false); }}>إعادة التحدي</button>
+            <button type="button" className="button button-ghost" onClick={() => { setChallengeCode(challengeMode === "repair" ? makeBrokenCode(lesson.example) : formatExample(lesson.example, trackKey).join("\n")); setChallengeFeedback(""); setChallengeSuccess(false); }}>إعادة التحدي</button>
           </div>
           {challengeFeedback && <div className={challengeSuccess ? "status success" : "status"} role="status">{challengeFeedback}</div>}
           <div className="mastery-question"><strong>سؤال مراجعة المفهوم</strong><p>{lesson.question}</p><details><summary>إظهار الإجابة والتفسير</summary><p>{lesson.answer}</p></details></div>
