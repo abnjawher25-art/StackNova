@@ -77,7 +77,7 @@ export default function TrackLesson({ trackKey }: Props) {
   const lesson = track.lessons.find((item) => item.slug === params.lesson);
   const [progress, setProgress] = useState<ReturnType<typeof getProgress>>({});
   const [loaded, setLoaded] = useState(false);
-  const starterCode = lesson ? formatExample(lesson.example, trackKey).join("\\n") : trackKey === "html" ? "<h1>مرحبًا بالعالم</h1>\\n<p>هذه أول صفحة لي.</p>" : trackKey === "css" ? ".title {\\n  color: #2868e8;\\n}" : "console.log('مرحبًا بالعالم');";
+  const starterCode = lesson ? formatExample(lesson.example, trackKey).join("\n") : trackKey === "html" ? "<h1>مرحبًا بالعالم</h1>\n<p>هذه أول صفحة لي.</p>" : trackKey === "css" ? ".title {\n  color: #2868e8;\n}" : "console.log('مرحبًا بالعالم');";
   const [code, setCode] = useState(starterCode);
   const [message, setMessage] = useState("");
   const [showHint, setShowHint] = useState(false);
