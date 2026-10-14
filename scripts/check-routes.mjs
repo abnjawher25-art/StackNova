@@ -2,6 +2,8 @@ import { existsSync, readFileSync } from "node:fs";
 
 const requiredFiles = [
   "app/page.tsx",
+  "app/account/page.tsx",
+  "app/ProgressCloudSync.tsx",
   "app/learn/html/page.tsx",
   "app/learn/html/roadmap/page.tsx",
   "app/learn/html/[lesson]/page.tsx",
