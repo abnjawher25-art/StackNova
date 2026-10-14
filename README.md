@@ -16,9 +16,12 @@ Open http://localhost:3000 in your browser.
 To verify a production build:
 
 ```bash
+npm run check:routes
 npm run build
 npm start
 ```
+
+See [the deployment guide](docs/DEPLOYMENT.md) for step-by-step hosting instructions.
 
 ## Learning tracks
 
