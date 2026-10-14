@@ -29,12 +29,15 @@ const allLessons = [...htmlLessons, ...cssLessons, ...jsLessons];
 export default function ProgressPage() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [quizScore, setQuizScore] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       setCompletedIds(allLessons.filter((lesson) => window.localStorage.getItem(lesson.id) === "completed").map((lesson) => lesson.id));
+      setQuizScore(window.localStorage.getItem("stacknova-web-knowledge-check"));
     } catch {
       setCompletedIds([]);
+      setQuizScore(null);
     }
     setLoaded(true);
   }, []);
@@ -80,11 +83,19 @@ export default function ProgressPage() {
           <div className="progress-track"><div className="progress-fill" style={{ width: loaded ? `${percent}%` : "0%" }} /></div>
           <Link className="button button-primary" href={nextLesson.href}>{completedCount === allLessons.length ? "راجع آخر درس" : "تابع الدرس التالي"} ↗</Link>
         </section>
+        <section className="panel" style={{ marginBottom: 22 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+            <div><span className="eyebrow">تدريب إضافي</span><h2 style={{ marginTop: 6 }}>اختبار أساسيات تطوير الويب</h2><p style={{ marginBottom: 0 }}>{quizScore === null ? "لم تسجل نتيجة بعد. اختبر معلوماتك في HTML وCSS وJavaScript." : `آخر نتيجة محفوظة: ${quizScore} من 10 (${Math.round(Number(quizScore) / 10 * 100)}%).`}</p></div>
+            <Link className="button button-primary" href="/practice">{quizScore === null ? "ابدأ الاختبار" : "أعد الاختبار"} ↗</Link>
+          </div>
+        </section>
         <section className="roadmap-list">
           <div><span className="eyebrow">المسار الأول</span><h2>أساسيات HTML</h2></div>
           {renderLessons(htmlLessons)}
           <div style={{ marginTop: 18 }}><span className="eyebrow">المسار الثاني</span><h2>تنسيق CSS</h2></div>
-          {renderLessons(cssLessons)}\n          <div style={{ marginTop: 18 }}><span className="eyebrow">المسار الثالث</span><h2>أساسيات JavaScript</h2></div>\n          {renderLessons(jsLessons)}
+          {renderLessons(cssLessons)}
+          <div style={{ marginTop: 18 }}><span className="eyebrow">المسار الثالث</span><h2>أساسيات JavaScript</h2></div>
+          {renderLessons(jsLessons)}
         </section>
       </main>
       <footer className="footer"><div className="container">StackNova · تقدّم صغير كل يوم</div></footer>
