@@ -137,6 +137,23 @@ export default function HomePage() {
           </div>
         </section>
 
+        <section className="signal-strip" aria-label={english ? "Learning highlights" : "مميزات التعلّم"}>
+          <div className="container signal-grid">
+            <article className="signal-item">
+              <span className="signal-icon" aria-hidden="true">⌘</span>
+              <div><strong>{english ? "03 learning paths" : "٣ مسارات تعليمية"}</strong><span>{english ? "HTML, CSS, JavaScript" : "HTML وCSS وJavaScript"}</span></div>
+            </article>
+            <article className="signal-item">
+              <span className="signal-icon" aria-hidden="true">↗</span>
+              <div><strong>{english ? "15 practical lessons" : "١٥ درسًا عمليًا"}</strong><span>{english ? "Learn in small steps" : "تعلّم بخطوات قصيرة"}</span></div>
+            </article>
+            <article className="signal-item">
+              <span className="signal-icon" aria-hidden="true">{"</>"}</span>
+              <div><strong>{english ? "Build as you learn" : "طبّق وأنت تتعلّم"}</strong><span>{english ? "Practice right in your browser" : "جرّب الكود داخل المتصفح"}</span></div>
+            </article>
+          </div>
+        </section>
+
         <section className="section" id="paths">
           <div className="container">
             <div className="section-heading">
