@@ -550,3 +550,31 @@ body {
   .lesson-stage { padding:17px; }
   .area-nav { grid-template-columns:1fr; }
 }
+
+
+/* Floating lesson islands inside each level */
+.lesson-islands { position:relative; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 22px; padding:12px 4px 20px; }
+.lesson-islands::before { content:""; position:absolute; inset:8% 8% 12%; pointer-events:none; opacity:.5; background:radial-gradient(ellipse at 15% 20%,rgba(55,164,255,.12),transparent 32%),radial-gradient(ellipse at 82% 72%,rgba(58,225,216,.09),transparent 35%); filter:blur(10px); }
+.lesson-islands .floating-island { position:relative; z-index:1; min-height:116px; grid-template-columns:42px minmax(0,1fr) 22px; align-items:start; gap:11px; padding:17px 15px 15px; border-radius:23px 27px 22px 28px; border:1px solid rgba(127,193,255,.28); background:linear-gradient(145deg,rgba(21,54,88,.96),rgba(10,27,49,.96)); box-shadow:0 12px 0 -5px rgba(34,119,173,.24),0 18px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.08); transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease; }
+.lesson-islands .floating-island::before { content:""; position:absolute; top:-5px; left:22px; right:22px; height:10px; border-radius:50%; background:linear-gradient(90deg,rgba(71,184,255,.22),rgba(91,236,222,.36),rgba(71,184,255,.18)); filter:blur(1px); }
+.lesson-islands .floating-island::after { content:""; position:absolute; left:16px; bottom:-8px; width:42%; height:12px; border-radius:50%; background:rgba(32,143,203,.2); filter:blur(7px); }
+.lesson-islands .floating-island:hover { transform:translateY(-5px); border-color:rgba(100,211,255,.62); box-shadow:0 15px 0 -5px rgba(34,119,173,.28),0 25px 35px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.1); }
+.lesson-islands .floating-island.island-2,.lesson-islands .floating-island.island-4 { transform:translateY(10px); }
+.lesson-islands .floating-island.island-2:hover,.lesson-islands .floating-island.island-4:hover { transform:translateY(5px); }
+.lesson-islands .floating-island.is-current { border-color:rgba(92,176,255,.7); background:linear-gradient(145deg,rgba(31,84,139,.98),rgba(12,37,67,.98)); }
+.lesson-islands .floating-island.is-mastered { border-color:rgba(87,227,176,.42); background:linear-gradient(145deg,rgba(17,71,75,.94),rgba(10,35,47,.98)); }
+.lesson-islands .floating-island.is-locked { opacity:.58; filter:saturate(.65); }
+.lesson-islands .floating-island.is-locked:hover { transform:none; border-color:rgba(127,193,255,.28); }
+.lesson-islands .lesson-number { border-radius:14px 12px 16px 12px; box-shadow:0 5px 12px rgba(0,0,0,.18); }
+.lesson-islands .lesson-copy strong { display:block; line-height:1.55; }
+.lesson-islands .lesson-meta { display:inline-flex; margin-top:4px; }
+.lesson-islands .lesson-state { padding-top:8px; }
+@media (max-width: 680px) {
+  .lesson-islands { grid-template-columns:1fr; gap:15px; padding-inline:3px; }
+  .lesson-islands .floating-island,.lesson-islands .floating-island.island-2,.lesson-islands .floating-island.island-4 { transform:none; min-height:unset; }
+  .lesson-islands .floating-island:hover,.lesson-islands .floating-island.island-2:hover,.lesson-islands .floating-island.island-4:hover { transform:translateY(-3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lesson-islands .floating-island { transition:none; }
+  .lesson-islands .floating-island:hover,.lesson-islands .floating-island.island-2:hover,.lesson-islands .floating-island.island-4:hover { transform:none; }
+}
