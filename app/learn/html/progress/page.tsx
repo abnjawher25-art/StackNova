@@ -28,14 +28,16 @@ const allLessons = [...htmlLessons, ...cssLessons, ...jsLessons];
 
 export default function ProgressPage() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);
-  const [loaded, setLoaded] = useState(false);\n  const [quizScore, setQuizScore] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [quizScore, setQuizScore] = useState<string | null>(null);
 
   useEffect(() => {
     try {
       setCompletedIds(allLessons.filter((lesson) => window.localStorage.getItem(lesson.id) === "completed").map((lesson) => lesson.id));
       setQuizScore(window.localStorage.getItem("stacknova-web-knowledge-check"));
     } catch {
-      setCompletedIds([]);\n      setQuizScore(null);
+      setCompletedIds([]);
+      setQuizScore(null);
     }
     setLoaded(true);
   }, []);
@@ -91,7 +93,9 @@ export default function ProgressPage() {
           <div><span className="eyebrow">المسار الأول</span><h2>أساسيات HTML</h2></div>
           {renderLessons(htmlLessons)}
           <div style={{ marginTop: 18 }}><span className="eyebrow">المسار الثاني</span><h2>تنسيق CSS</h2></div>
-          {renderLessons(cssLessons)}\n          <div style={{ marginTop: 18 }}><span className="eyebrow">المسار الثالث</span><h2>أساسيات JavaScript</h2></div>\n          {renderLessons(jsLessons)}
+          {renderLessons(cssLessons)}
+          <div style={{ marginTop: 18 }}><span className="eyebrow">المسار الثالث</span><h2>أساسيات JavaScript</h2></div>
+          {renderLessons(jsLessons)}
         </section>
       </main>
       <footer className="footer"><div className="container">StackNova · تقدّم صغير كل يوم</div></footer>
