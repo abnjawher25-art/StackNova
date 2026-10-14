@@ -124,7 +124,7 @@ export default function HtmlPracticeLessonPage() {
       <header className="site-header">
         <div className="container nav">
           <Link className="brand" href="/"><span className="brand-mark">S</span><span>StackNova</span></Link>
-          <nav className="nav-links"><Link href="/">الرئيسية</Link><Link href="/learn/html/roadmap">خريطة HTML</Link></nav>
+          <nav className="nav-links"><Link href="/">الرئيسية</Link><Link href="/learn/html/roadmap">خريطة HTML</Link><Link href="/learn/html/progress">تقدّمي</Link></nav>
           <Link className="button button-ghost nav-cta" href="/learn/html">الدرس الأول</Link>
         </div>
       </header>
