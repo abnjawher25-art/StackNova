@@ -1,0 +1,11 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "مرجع HTML وCSS وJavaScript",
+  description:
+    "مرجع سريع لأهم وسوم HTML وخصائص CSS ومفاهيم JavaScript مع أمثلة كود قابلة للنسخ.",
+};
+
+export default function ReferenceLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return children;
+}
