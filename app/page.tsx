@@ -145,7 +145,7 @@ export default function HomePage() {
             </article>
             <article className="signal-item">
               <span className="signal-icon" aria-hidden="true">↗</span>
-              <div><strong>{english ? "15 practical lessons" : "١٥ درسًا عمليًا"}</strong><span>{english ? "Learn in small steps" : "تعلّم بخطوات قصيرة"}</span></div>
+              <div><strong>{english ? "150 detailed lessons" : "١٥٠ درسًا تفصيليًا"}</strong><span>{english ? "Learn in small steps" : "تعلّم بخطوات قصيرة"}</span></div>
             </article>
             <article className="signal-item">
               <span className="signal-icon" aria-hidden="true">{"</>"}</span>
@@ -161,9 +161,9 @@ export default function HomePage() {
               <Link className="text-link" href="/learn/html/roadmap">{copy.allPaths}</Link>
             </div>
             <div className="track-grid">
-              <article className="track-card"><div className="track-icon">⌘</div><h3>{copy.html}</h3><p>{copy.htmlDesc}</p><div className="track-meta"><span>HTML5</span><span>4 {copy.lessons}</span></div><p style={{ marginTop: 18, marginBottom: 0 }}><Link className="text-link" href="/learn/html">{copy.start} ↗</Link></p></article>
-              <article className="track-card"><div className="track-icon">✳</div><h3>{copy.css}</h3><p>{copy.cssDesc}</p><div className="track-meta"><span>CSS3</span><span>6 {copy.lessons}</span></div><p style={{ marginTop: 18, marginBottom: 0 }}><Link className="text-link" href="/learn/css">{copy.start} ↗</Link></p></article>
-              <article className="track-card"><div className="track-icon">⚡</div><h3>{copy.js}</h3><p>{copy.jsDesc}</p><div className="track-meta"><span>ES6+</span><span>5 {copy.lessons}</span></div><p style={{ marginTop: 18, marginBottom: 0 }}><Link className="text-link" href="/learn/javascript">{copy.start} ↗</Link></p></article>
+              <article className="track-card"><div className="track-icon">⌘</div><h3>{copy.html}</h3><p>{copy.htmlDesc}</p><div className="track-meta"><span>HTML5</span><span>50 {copy.lessons}</span></div><p style={{ marginTop: 18, marginBottom: 0 }}><Link className="text-link" href="/learn/html">{copy.start} ↗</Link></p></article>
+              <article className="track-card"><div className="track-icon">✳</div><h3>{copy.css}</h3><p>{copy.cssDesc}</p><div className="track-meta"><span>CSS3</span><span>50 {copy.lessons}</span></div><p style={{ marginTop: 18, marginBottom: 0 }}><Link className="text-link" href="/learn/css">{copy.start} ↗</Link></p></article>
+              <article className="track-card"><div className="track-icon">⚡</div><h3>{copy.js}</h3><p>{copy.jsDesc}</p><div className="track-meta"><span>ES6+</span><span>50 {copy.lessons}</span></div><p style={{ marginTop: 18, marginBottom: 0 }}><Link className="text-link" href="/learn/javascript">{copy.start} ↗</Link></p></article>
             </div>
           </div>
         </section>
