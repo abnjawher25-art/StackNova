@@ -128,6 +128,21 @@ export default function TrackLesson({ trackKey }: Props) {
   }, [lesson, track]);
 
 
+  function completeLessonFromGame() {
+    if (!lesson || mastered) return;
+    const nextAttempts = (progress[lesson.id]?.attempts ?? 0) + 1;
+    const updated = {
+      ...progress,
+      [lesson.id]: { attempts: nextAttempts, mastered: true },
+    };
+    setAttempts(nextAttempts);
+    setProgress(updated);
+    saveProgress(updated);
+    setReward(true);
+    setShowRecovery(false);
+    setMessage("رائع! حللت اللعبة بنجاح، وأُتقنت المهمة وفتح الدرس التالي مباشرةً.");
+  }
+
   function checkMastery() {
     if (!lesson || !unlocked || !regex) return;
     const nextAttempts = (progress[lesson.id]?.attempts ?? 0) + 1;
@@ -161,6 +176,7 @@ export default function TrackLesson({ trackKey }: Props) {
     setFixFeedback(isFixed
       ? "أحسنت! اكتشفت الخطأ وأعدت الكود إلى صيغته الصحيحة."
       : "لم يُصلح الخطأ بالكامل بعد. قارن الأقواس والرموز مع المثال الأصلي وحاول مرة أخرى.");
+    if (isFixed) completeLessonFromGame();
   }
 
   function moveDragPiece(id: number, delta: number) {
@@ -197,11 +213,13 @@ export default function TrackLesson({ trackKey }: Props) {
     setDragFeedback(correct
       ? "ترتيب ممتاز! أصبحت أجزاء المثال في مواضعها الصحيحة."
       : "اقتربت! حرّك الأسطر بالسحب أو استخدم الأسهم حتى يصبح الترتيب صحيحًا.");
+    if (correct) completeLessonFromGame();
   }
 
   function checkQuiz() {
     if (quizChoice === null) return;
     setQuizChecked(true);
+    if (quizOptions[quizChoice]?.correct) completeLessonFromGame();
   }
 
   if (!lesson) return <main className="container page-top"><h1>هذا الدرس غير موجود</h1><p>اختر درسًا من خريطة المسار.</p><Link className="button button-primary" href={trackKey === "html" ? "/learn/html" : "/learn/" + trackKey}>العودة إلى الخريطة</Link></main>;
