@@ -17,7 +17,14 @@ const cssLessons = [
   { id: "stacknova-css-responsive", title: "التصميم المتجاوب", description: "حسّن التنسيق على الهاتف باستخدام Media Queries.", href: "/learn/css/responsive" },
   { id: "stacknova-css-mini-project", title: "مشروع بطاقة تعريفية", description: "اجمع خصائص CSS في مشروع صغير.", href: "/learn/css/mini-project" },
 ];
-const allLessons = [...htmlLessons, ...cssLessons];
+const jsLessons = [
+  { id: "stacknova-js-basics", title: "المتغيرات والقيم", description: "تعرّف على let وconst.", href: "/learn/javascript/basics" },
+  { id: "stacknova-js-conditions", title: "الشروط والقرارات", description: "استخدم if وelse.", href: "/learn/javascript/conditions" },
+  { id: "stacknova-js-functions", title: "الدوال", description: "اكتب دالة تعيد نتيجة.", href: "/learn/javascript/functions" },
+  { id: "stacknova-js-dom", title: "التعامل مع DOM", description: "غيّر الصفحة عند النقر.", href: "/learn/javascript/dom" },
+  { id: "stacknova-js-mini-project", title: "مشروع عدّاد النقرات", description: "أنشئ عدّادًا تفاعليًا.", href: "/learn/javascript/mini-project" },
+];
+const allLessons = [...htmlLessons, ...cssLessons, ...jsLessons];
 
 export default function ProgressPage() {
   const [completedIds, setCompletedIds] = useState<string[]>([]);
@@ -54,16 +61,16 @@ export default function ProgressPage() {
       <header className="site-header">
         <div className="container nav">
           <Link className="brand" href="/"><span className="brand-mark">S</span><span>StackNova</span></Link>
-          <nav className="nav-links"><Link href="/">الرئيسية</Link><Link href="/learn/html/roadmap">خريطة HTML</Link><Link href="/learn/css">خريطة CSS</Link></nav>
+          <nav className="nav-links"><Link href="/">الرئيسية</Link><Link href="/learn/html/roadmap">خريطة HTML</Link><Link href="/learn/css">خريطة CSS</Link><Link href="/learn/javascript">خريطة JavaScript</Link></nav>
           <Link className="button button-primary nav-cta" href={nextLesson.href}>واصل التعلّم</Link>
         </div>
       </header>
       <main className="container">
         <section className="page-top">
           <div className="breadcrumb"><Link href="/">الرئيسية</Link> / تقدّمي</div>
-          <span className="eyebrow">مسارك الشخصي · HTML + CSS</span>
+          <span className="eyebrow">مسارك الشخصي · HTML + CSS + JavaScript</span>
           <h1>تقدّمك في StackNova</h1>
-          <p>تابع الدروس التي أنجزتها في مساري HTML وCSS. يُحفظ التقدّم محليًا في هذا المتصفح.</p>
+          <p>تابع الدروس التي أنجزتها في مسارات HTML وCSS وJavaScript. يُحفظ التقدّم محليًا في هذا المتصفح.</p>
         </section>
         <section className="panel" style={{ marginBottom: 22 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
@@ -77,7 +84,7 @@ export default function ProgressPage() {
           <div><span className="eyebrow">المسار الأول</span><h2>أساسيات HTML</h2></div>
           {renderLessons(htmlLessons)}
           <div style={{ marginTop: 18 }}><span className="eyebrow">المسار الثاني</span><h2>تنسيق CSS</h2></div>
-          {renderLessons(cssLessons)}
+          {renderLessons(cssLessons)}\n          <div style={{ marginTop: 18 }}><span className="eyebrow">المسار الثالث</span><h2>أساسيات JavaScript</h2></div>\n          {renderLessons(jsLessons)}
         </section>
       </main>
       <footer className="footer"><div className="container">StackNova · تقدّم صغير كل يوم</div></footer>
