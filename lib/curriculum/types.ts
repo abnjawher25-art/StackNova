@@ -8,6 +8,8 @@ export type Lesson = {
 
 export type TrackKey = "html" | "css" | "javascript";
 export type Track = { key: TrackKey; title: string; subtitle: string; areas: string[]; lessons: Lesson[] };
+export type LessonProgress = { attempts: number; mastered: boolean };
+export type ProgressRecord = Record<string, LessonProgress>;
 
 export function buildLessons(track: TrackKey, seeds: LessonSeed[], areas: string[]): Lesson[] {
   return seeds.map((seed, index) => {
@@ -25,14 +27,15 @@ export function buildLessons(track: TrackKey, seeds: LessonSeed[], areas: string
   });
 }
 
-export function getProgress(): Record<string, { attempts: number; mastered: boolean }> {
+export function getProgress(): ProgressRecord {
   if (typeof window === "undefined") return {};
-  try { return JSON.parse(localStorage.getItem("stacknova-mastery-v1") || "{}"); }
+  try { return JSON.parse(localStorage.getItem("stacknova-mastery-v1") || "{}") as ProgressRecord; }
   catch { return {}; }
 }
 
-export function saveProgress(progress: Record<string, { attempts: number; mastered: boolean }>) {
+export function saveProgress(progress: ProgressRecord) {
   if (typeof window === "undefined") return;
   try { localStorage.setItem("stacknova-mastery-v1", JSON.stringify(progress)); }
   catch { /* The current session can continue if browser storage is unavailable. */ }
+  window.dispatchEvent(new CustomEvent<ProgressRecord>("stacknova:progress-updated", { detail: progress }));
 }
