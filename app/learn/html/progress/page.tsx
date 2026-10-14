@@ -32,7 +32,8 @@ export default function ProgressPage() {
 
   useEffect(() => {
     try {
-      setCompletedIds(allLessons.filter((lesson) => window.localStorage.getItem(lesson.id) === "completed").map((lesson) => lesson.id));\n      setQuizScore(window.localStorage.getItem("stacknova-web-knowledge-check"));
+      setCompletedIds(allLessons.filter((lesson) => window.localStorage.getItem(lesson.id) === "completed").map((lesson) => lesson.id));
+      setQuizScore(window.localStorage.getItem("stacknova-web-knowledge-check"));
     } catch {
       setCompletedIds([]);\n      setQuizScore(null);
     }
