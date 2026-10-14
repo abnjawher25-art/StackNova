@@ -26,7 +26,7 @@ const lessons: Record<string, Lesson> = {
 <h2>صورة توضيحية</h2>
 <img src="https://placehold.co/320x160" alt="صورة تجريبية">`,
     checklist: ["استخدم رابطًا يحتوي على href.", "أضف صورة باستخدام img.", "اكتب نصًا بديلًا داخل alt."],
-    validate: (code) => /<a\\b[^>]*href\\s*=/i.test(code) && /<img\\b/i.test(code) && /\\balt\\s*=/i.test(code),
+    validate: (code) => /<a\b[^>]*href\s*=/i.test(code) && /<img\b/i.test(code) && /\balt\s*=/i.test(code),
     success: "ممتاز! أضفت رابطًا وصورة مع نص بديل.",
     hint: "الرابط يبدأ بـ <a>، والصورة تستخدم <img> مع الخاصية alt."
   },
@@ -46,7 +46,7 @@ const lessons: Record<string, Lesson> = {
   <li>مراجعة ما تعلّمته</li>
 </ol>`,
     checklist: ["افتح قائمة باستخدام ul.", "أضف ثلاثة عناصر li على الأقل.", "أغلق القائمة بصورة صحيحة."],
-    validate: (code) => /<ul\\b/i.test(code) && /<\\/ul\\s*>/i.test(code) && (code.match(/<li\\b/gi) || []).length >= 3,
+    validate: (code) => /<ul\b/i.test(code) && /<\/ul\s*>/i.test(code) && (code.match(/<li\b/gi) || []).length >= 3,
     success: "أحسنت! أنشأت قائمة غير مرتبة تضم ثلاثة عناصر على الأقل.",
     hint: "كل عنصر قائمة يُكتب داخل <li>، وتُجمع العناصر داخل <ul> أو <ol>."
   },
@@ -64,7 +64,7 @@ const lessons: Record<string, Lesson> = {
 </ul>
 <p><a href="https://example.com">موقع أتعلم منه</a></p>`,
     checklist: ["أضف عنوانًا رئيسيًا وفقرة.", "أضف قائمة بثلاثة عناصر.", "أضف رابطًا يحتوي على href."],
-    validate: (code) => /<h1(?:\\s|>)/i.test(code) && /<p(?:\\s|>)/i.test(code) && /<ul\\b/i.test(code) && (code.match(/<li\\b/gi) || []).length >= 3 && /<a\\b[^>]*href\\s*=/i.test(code),
+    validate: (code) => /<h1(?:\s|>)/i.test(code) && /<p(?:\s|>)/i.test(code) && /<ul\b/i.test(code) && (code.match(/<li\b/gi) || []).length >= 3 && /<a\b[^>]*href\s*=/i.test(code),
     success: "رائع! أنجزت أساسيات صفحتك التعريفية الأولى.",
     hint: "قسّم الصفحة إلى أجزاء صغيرة، ثم تأكد من وجود كل عنصر مطلوب."
   }
