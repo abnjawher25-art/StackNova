@@ -250,7 +250,7 @@ export default function TrackLesson({ trackKey }: Props) {
             <label htmlFor="fix-code-editor" className="editor-label">الكود الذي يحتاج إلى إصلاح</label>
             <textarea id="fix-code-editor" className="lesson-editor game-fix-editor" value={fixCode} spellCheck={false} onChange={(event) => { setFixCode(event.target.value); setFixFeedback(""); }} />
             <div className="editor-actions"><button type="button" className="button button-primary" onClick={checkFixCode}>تحقق من التصحيح</button><button type="button" className="button button-ghost" onClick={() => { setFixCode(makeBrokenCode(lesson.example)); setFixFeedback(""); }}>إعادة ضبط الخطأ</button></div>
-            {fixFeedback && <p className={fixCode.replace(/\\s+/g, "") === lesson.example.replace(/\\s+/g, "") ? "status success" : "status"} role="status">{fixFeedback}</p>}
+            {fixFeedback && <p className={fixCode.replace(/\s+/g, "") === lesson.example.replace(/\s+/g, "") ? "status success" : "status"} role="status">{fixFeedback}</p>}
           </div>}
 
           {gameMode === "drag" && <div className="game-panel-content">
