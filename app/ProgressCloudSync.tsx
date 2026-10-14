@@ -42,13 +42,13 @@ export default function ProgressCloudSync() {
       setStatus("local");
       return;
     }
-
+    const supabase = client;
     let active = true;
 
     async function persistProgress(userId: string, progress: ProgressRecord) {
       if (!active) return;
       setStatus("saving");
-      const { error } = await client.from("stacknova_progress").upsert(
+      const { error } = await supabase.from("stacknova_progress").upsert(
         { user_id: userId, progress, updated_at: new Date().toISOString() },
         { onConflict: "user_id" },
       );
@@ -85,7 +85,7 @@ export default function ProgressCloudSync() {
         }
       }
 
-      const { data, error } = await client
+      const { data, error } = await supabase
         .from("stacknova_progress")
         .select("progress")
         .eq("user_id", userId)
@@ -122,10 +122,10 @@ export default function ProgressCloudSync() {
     };
 
     window.addEventListener("stacknova:progress-updated", progressHandler);
-    const { data: authListener } = client.auth.onAuthStateChange((_event, session) => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       void handleSession(session?.user ? { id: session.user.id } : null);
     });
-    void client.auth.getSession().then(({ data }) => {
+    void supabase.auth.getSession().then(({ data }) => {
       void handleSession(data.session?.user ? { id: data.session.user.id } : null);
     });
 
