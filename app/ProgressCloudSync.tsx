@@ -75,11 +75,11 @@ export default function ProgressCloudSync() {
 
       const userId = sessionUser.id;
       const previousOwner = localStorage.getItem(OWNER_KEY);
-      const localProgress = getProgress();
+      const initialLocalProgress = getProgress();
 
       if (!previousOwner) {
         try {
-          localStorage.setItem(GUEST_KEY, JSON.stringify(localProgress));
+          localStorage.setItem(GUEST_KEY, JSON.stringify(initialLocalProgress));
         } catch {
           // Cloud saving can still work when local storage is unavailable.
         }
@@ -98,8 +98,12 @@ export default function ProgressCloudSync() {
         return;
       }
 
+      // Read again after the network request so progress made while loading is not lost.
+      const latestLocalProgress = getProgress();
       // Never merge another signed-in user's local data into this account.
-      const localForThisUser = previousOwner && previousOwner !== userId ? {} : localProgress;
+      const localForThisUser = previousOwner && previousOwner !== userId
+        ? {}
+        : latestLocalProgress;
       const cloudProgress = (data?.progress ?? {}) as ProgressRecord;
       const merged = mergeProgress(localForThisUser, cloudProgress);
 
