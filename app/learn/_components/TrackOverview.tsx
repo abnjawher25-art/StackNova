@@ -53,13 +53,13 @@ export default function TrackOverview({ trackKey }: Props) {
             const areaOpen = unlocked && isLessonUnlocked(track, group.areaIndex * 5, progress);
             return <section className={areaOpen ? "area-section" : "area-section area-locked"} id={"area-" + (group.areaIndex + 1)} key={group.area}>
               <div className="area-heading"><div><span className="area-kicker">المنطقة {String(group.areaIndex + 1).padStart(2, "0")} · 5 مهمات</span><h2>{group.area}</h2></div><span className={areaDone ? "pill pill-done" : "pill"}>{areaDone ? "اكتملت" : areaOpen ? "على الخريطة" : "مقفلة"}</span></div>
-              <div className="lesson-list">{group.lessons.map((lesson) => {
+              <div className="lesson-islands">{group.lessons.map((lesson, islandIndex) => {
                 const masteredLesson = progress[lesson.id]?.mastered === true;
                 const lessonUnlocked = unlocked && isLessonUnlocked(track, lesson.number - 1, progress);
                 const status = masteredLesson ? "متقن" : lessonUnlocked ? "متاح الآن" : "مقفل";
                 const href = "/learn/" + trackKey + "/" + lesson.slug;
                 const body = <><span className="lesson-number">{String(lesson.number).padStart(2, "0")}</span><span className="lesson-copy"><strong>{lesson.title}</strong><small>{lesson.summary}</small><span className="lesson-meta">المهمة {lesson.stage} · {lesson.minutes} دقيقة · {status}</span></span><span className="lesson-state" aria-hidden="true">{masteredLesson ? "✓" : lessonUnlocked ? "↗" : "🔒"}</span></>;
-                return lessonUnlocked ? <Link className={"lesson-row " + (masteredLesson ? "is-mastered" : "is-current")} href={href} key={lesson.id}>{body}</Link> : <div className="lesson-row is-locked" key={lesson.id} aria-disabled="true">{body}</div>;
+                return lessonUnlocked ? <Link className={"lesson-row floating-island island-" + (islandIndex + 1) + " " + (masteredLesson ? "is-mastered" : "is-current")} href={href} key={lesson.id}>{body}</Link> : <div className={"lesson-row floating-island island-" + (islandIndex + 1) + " is-locked"} key={lesson.id} aria-disabled="true">{body}</div>;
               })}</div>
             </section>;
           })}
