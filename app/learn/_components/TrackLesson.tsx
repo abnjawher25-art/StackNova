@@ -84,10 +84,6 @@ export default function TrackLesson({ trackKey }: Props) {
   const [showRecovery, setShowRecovery] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [reward, setReward] = useState(false);
-  const [gameOptions, setGameOptions] = useState<GamePiece[]>([]);
-  const [gameSelected, setGameSelected] = useState<number[]>([]);
-  const [gameMessage, setGameMessage] = useState("");
-  const [gameWon, setGameWon] = useState(false);
   const [gameMode, setGameMode] = useState<"fix" | "drag" | "quiz">("fix");
   const [fixCode, setFixCode] = useState("");
   const [fixFeedback, setFixFeedback] = useState("");
@@ -105,7 +101,7 @@ export default function TrackLesson({ trackKey }: Props) {
     setAttempts(saved[lesson?.id ?? ""]?.attempts ?? 0);
     setLoaded(true);
   }, [lesson?.id]);
-  useEffect(() => { setCode(starterCode); }, [lesson?.id, starterCode]);
+  useEffect(() => { setCode(starterCode); setFixCode(makeBrokenCode(lesson?.example ?? "")); }, [lesson?.id, starterCode]);
 
   const index = lesson ? lesson.number - 1 : -1;
   const unlocked = loaded && !!lesson && isLessonUnlocked(track, index, progress);
@@ -176,7 +172,7 @@ export default function TrackLesson({ trackKey }: Props) {
 
   function checkFixCode() {
     if (!lesson) return;
-    const normalize = (value: string) => value.replace(/\\s+/g, "");
+    const normalize = (value: string) => value.replace(/\s+/g, "");
     const isFixed = normalize(fixCode) === normalize(lesson.example);
     setFixFeedback(isFixed
       ? "أحسنت! اكتشفت الخطأ وأعدت الكود إلى صيغته الصحيحة."
