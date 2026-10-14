@@ -124,10 +124,21 @@ button { font: inherit; }
   .code-body { padding:20px; font-size:.82rem; }
 }
 
-.quiz-option { display:flex; align-items:center; gap:12px; width:100%; padding:14px 16px; border:1px solid var(--line); border-radius:12px; background:var(--panel); color:var(--foreground); text-align:right; cursor:pointer; line-height:1.7; transition:border-color .15s,background .15s; }
+.quiz-option { display:flex; align-items:center; gap:12px; width:100%; padding:14px 16px; border:1px solid var(--line); border-radius:12px; background:var(--panel); color:var(--text); text-align:right; cursor:pointer; line-height:1.7; transition:border-color .15s,background .15s; }
 .quiz-option:hover:not(:disabled) { border-color:var(--primary); }
 .quiz-option.selected { border-color:var(--primary); background:color-mix(in srgb,var(--primary) 8%,var(--panel)); }
 .quiz-option > span { display:inline-grid; place-items:center; width:28px; height:28px; flex:0 0 28px; border:1px solid var(--line); border-radius:50%; font-size:.8rem; }
 .quiz-option.correct { border-color:#16a34a; background:rgba(22,163,74,.09); }
 .quiz-option.incorrect { border-color:#dc2626; background:rgba(220,38,38,.08); }
 .quiz-option:disabled { cursor:default; opacity:1; }
+
+.reference-search { width:100%; padding:13px 15px; border:1px solid var(--line); border-radius:12px; background:var(--panel-soft); color:var(--text); font:inherit; outline:none; }
+.reference-search:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(139,124,255,.15); }
+.filter-row { display:flex; gap:9px; flex-wrap:wrap; margin:16px 0 10px; }
+.filter-chip { padding:8px 15px; border:1px solid var(--line); border-radius:999px; background:var(--panel-soft); color:var(--text); cursor:pointer; }
+.filter-chip.active { border-color:var(--primary); background:rgba(139,124,255,.16); color:#c8c0ff; }
+.reference-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin-bottom:28px; }
+.reference-card h2 { margin:8px 0; font-size:1.2rem; }
+.reference-card p { color:var(--muted); line-height:1.8; }
+.reference-code { overflow:auto; padding:14px; border:1px solid var(--line); border-radius:10px; background:#080d19; color:#d9e2ff; line-height:1.7; white-space:pre-wrap; }
+@media (max-width:560px) { .reference-grid { grid-template-columns:1fr; } }
