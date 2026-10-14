@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build:
-    name: Build web app
+    name: Route checks and production build
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -22,5 +22,7 @@ jobs:
           node-version: 20
       - name: Install dependencies
         run: npm install
+      - name: Check required routes and recovery pages
+        run: npm run check:routes
       - name: Build Next.js app
         run: npm run build
