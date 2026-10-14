@@ -100,10 +100,13 @@ export default function ProgressCloudSync() {
 
       // Read again after the network request so progress made while loading is not lost.
       const latestLocalProgress = getProgress();
-      // Never merge another signed-in user's local data into this account.
-      const localForThisUser = previousOwner && previousOwner !== userId
-        ? {}
-        : latestLocalProgress;
+      // Only reuse local progress when it is already tagged as belonging to this
+      // exact account. Guest progress stays separate and is restored on sign-out.
+      // This prevents one browser's guest state or a different account's state
+      // from being silently copied into a newly signed-in account.
+      const localForThisUser = previousOwner === userId
+        ? latestLocalProgress
+        : {};
       const cloudProgress = (data?.progress ?? {}) as ProgressRecord;
       const merged = mergeProgress(localForThisUser, cloudProgress);
 
