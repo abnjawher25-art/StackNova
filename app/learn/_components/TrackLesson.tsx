@@ -181,15 +181,15 @@ export default function TrackLesson({ trackKey }: Props) {
 
   function checkChallenge() {
     if (!lesson || !regex) return;
-    const normalize = (value: string) => value.replace(/\\s+/g, "");
+    const normalize = (value: string) => value.replace(/\s+/g, "");
     let success = false;
 
     if (challengeMode === "repair") {
       success = normalize(challengeCode) === normalize(lesson.example);
     } else if (challengeMode === "build") {
-      success = challengeCode.trim().length > 0 && regex.test(challengeCode);
+      success = challengeCode.trim().length > 0 && normalize(challengeCode) !== normalize(lesson.example) && regex.test(challengeCode);
     } else {
-      success = challengeCode.trim().length > lesson.example.trim().length && regex.test(challengeCode);
+      success = challengeCode.trim().length > formatExample(lesson.example, trackKey).join("\n").trim().length + 10 && normalize(challengeCode) !== normalize(lesson.example) && regex.test(challengeCode);
     }
 
     setChallengeSuccess(success);
