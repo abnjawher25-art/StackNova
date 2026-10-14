@@ -88,6 +88,16 @@ export default function TrackLesson({ trackKey }: Props) {
   const [gameSelected, setGameSelected] = useState<number[]>([]);
   const [gameMessage, setGameMessage] = useState("");
   const [gameWon, setGameWon] = useState(false);
+  const [gameMode, setGameMode] = useState<"fix" | "drag" | "quiz">("fix");
+  const [fixCode, setFixCode] = useState("");
+  const [fixFeedback, setFixFeedback] = useState("");
+  const [dragPieces, setDragPieces] = useState<GamePiece[]>([]);
+  const [draggedId, setDraggedId] = useState<number | null>(null);
+  const [dragFeedback, setDragFeedback] = useState("");
+  const [dragWon, setDragWon] = useState(false);
+  const [quizChoice, setQuizChoice] = useState<number | null>(null);
+  const [quizChecked, setQuizChecked] = useState(false);
+
 
   useEffect(() => {
     const saved = getProgress();
@@ -109,6 +119,18 @@ export default function TrackLesson({ trackKey }: Props) {
   }, [lesson]);
   const exampleLines = useMemo(() => formatExample(lesson?.example ?? "", trackKey), [lesson, trackKey]);
   const previewDocument = useMemo(() => buildPreview(code, trackKey), [code, trackKey]);
+  const quizOptions = useMemo(() => {
+    if (!lesson) return [];
+    const alternatives = track.lessons
+      .filter((item) => item.id !== lesson.id)
+      .map((item) => item.summary)
+      .filter((text, index, all) => text !== lesson.answer && all.indexOf(text) === index)
+      .slice(0, 3);
+    const choices = [{ text: lesson.answer, correct: true }, ...alternatives.map((text) => ({ text, correct: false }))];
+    const shift = lesson.number % choices.length;
+    return choices.slice(shift).concat(choices.slice(0, shift));
+  }, [lesson, track]);
+
 
   function checkMastery() {
     if (!lesson || !unlocked || !regex) return;
@@ -128,30 +150,78 @@ export default function TrackLesson({ trackKey }: Props) {
     }
   }
 
+  function makeBrokenCode(source: string) {
+    if (trackKey === "html") return source.replace(">", "");
+    if (trackKey === "css") return source.includes(":") ? source.replace(":", "") : source.replace("{", "");
+    if (source.includes(";")) return source.replace(";", "");
+    if (source.includes("console.log")) return source.replace("console.log", "console.logg");
+    return source + ")";
+  }
+
   function startGame() {
     const pieces = createGamePieces(exampleLines, lesson?.example ?? "", trackKey);
     setGameOptions([...pieces].reverse());
     setGameSelected([]);
     setGameWon(false);
-    setGameMessage(pieces.length > 1 ? "رتّب أجزاء المثال بالنقر عليها من البداية إلى النهاية." : "راجع المثال ثم انتقل إلى التحدي.");
+    setGameMessage("");
+    setFixCode(makeBrokenCode(lesson?.example ?? ""));
+    setFixFeedback("");
+    setDragPieces([...pieces].reverse());
+    setDraggedId(null);
+    setDragFeedback("");
+    setDragWon(false);
+    setQuizChoice(null);
+    setQuizChecked(false);
   }
 
-  function chooseGamePiece(id: number) {
-    if (!lesson || gameWon) return;
-    const expectedId = gameSelected.length;
-    if (id === expectedId) {
-      const nextSelected = [...gameSelected, id];
-      setGameSelected(nextSelected);
-      if (nextSelected.length === gameOptions.length) {
-        setGameWon(true);
-        setGameMessage("رائع! رتّبت أجزاء المثال بشكل صحيح. حصلت على نقطة إتقان إضافية!");
-      } else {
-        setGameMessage("صحيح، أكمل ترتيب بقية الأسطر.");
-      }
-    } else {
-      setGameSelected([]);
-      setGameMessage("ليس هذا السطر التالي. حاول مجددًا وابدأ من أول المثال.");
-    }
+  function checkFixCode() {
+    if (!lesson) return;
+    const normalize = (value: string) => value.replace(/\\s+/g, "");
+    const isFixed = normalize(fixCode) === normalize(lesson.example);
+    setFixFeedback(isFixed
+      ? "أحسنت! اكتشفت الخطأ وأعدت الكود إلى صيغته الصحيحة."
+      : "لم يُصلح الخطأ بالكامل بعد. قارن الأقواس والرموز مع المثال الأصلي وحاول مرة أخرى.");
+  }
+
+  function moveDragPiece(id: number, delta: number) {
+    if (dragWon) return;
+    setDragPieces((current) => {
+      const from = current.findIndex((piece) => piece.id === id);
+      const to = from + delta;
+      if (from < 0 || to < 0 || to >= current.length) return current;
+      const next = [...current];
+      [next[from], next[to]] = [next[to], next[from]];
+      return next;
+    });
+    setDragFeedback("");
+  }
+
+  function dropDragPiece(targetId: number) {
+    if (draggedId === null || draggedId === targetId || dragWon) return;
+    setDragPieces((current) => {
+      const from = current.findIndex((piece) => piece.id === draggedId);
+      const to = current.findIndex((piece) => piece.id === targetId);
+      if (from < 0 || to < 0) return current;
+      const next = [...current];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return next;
+    });
+    setDraggedId(null);
+    setDragFeedback("");
+  }
+
+  function checkDragOrder() {
+    const correct = dragPieces.every((piece, index) => piece.id === index);
+    setDragWon(correct);
+    setDragFeedback(correct
+      ? "ترتيب ممتاز! أصبحت أجزاء المثال في مواضعها الصحيحة."
+      : "اقتربت! حرّك الأسطر بالسحب أو استخدم الأسهم حتى يصبح الترتيب صحيحًا.");
+  }
+
+  function checkQuiz() {
+    if (quizChoice === null) return;
+    setQuizChecked(true);
   }
 
   if (!lesson) return <main className="container page-top"><h1>هذا الدرس غير موجود</h1><p>اختر درسًا من خريطة المسار.</p><Link className="button button-primary" href={trackKey === "html" ? "/learn/html" : "/learn/" + trackKey}>العودة إلى الخريطة</Link></main>;
@@ -169,7 +239,46 @@ export default function TrackLesson({ trackKey }: Props) {
 
         <article className="panel lesson-stage"><span className="stage-label">المرحلة 3 · طبّق</span><h2>التدريب والمعاينة المباشرة</h2><p>عدّل الكود في المحرر، وستظهر النتيجة في شاشة المعاينة مباشرةً. جرّب تغيير النصوص أو القيم ولاحظ الفرق.</p><label htmlFor="lesson-editor" className="editor-label">محرر {trackKey === "html" ? "HTML" : trackKey === "css" ? "CSS" : "JavaScript"}</label><textarea id="lesson-editor" className="lesson-editor" value={code} spellCheck={false} onChange={(event) => { setCode(event.target.value); setMessage(""); setReward(false); }} /><div className="editor-actions"><button className="button button-primary" onClick={checkMastery}>تحقق من الإتقان</button><button className="button button-ghost" onClick={() => { setCode(starterCode); setMessage(""); setReward(false); }}>إعادة المثال</button><button className="button button-ghost" onClick={() => setShowHint((value) => !value)}>{showHint ? "إخفاء التلميح" : "أظهر تلميحًا"}</button></div><div className="live-preview"><div className="live-preview-header"><span className="live-preview-indicator" /><strong>المعاينة المباشرة</strong><span>تتحدّث أثناء الكتابة</span></div><iframe className="live-preview-frame" title="معاينة نتيجة الكود" srcDoc={previewDocument} sandbox="allow-scripts" /> </div>{showHint && <div className="hint-box"><strong>تلميح عملي</strong><p>{lesson.hint}</p></div>}{message && <div className={reward ? "status success" : "status"} role="status">{message}</div>}<div className="attempt-line">محاولاتك في هذا الدرس: {attempts}</div></article>
 
-        <article className="panel lesson-stage game-stage"><span className="stage-label">المرحلة 4 · العب</span><h2>لعبة ترتيب الكود</h2><p>اختبر فهمك بترتيب أجزاء المثال. ابدأ الجولة، ثم اختر الأسطر من أول سطر إلى آخر سطر.</p><button className="button button-primary" onClick={startGame}>{gameOptions.length ? "إعادة الجولة" : "ابدأ اللعبة"}</button>{gameOptions.length > 0 && <div className="code-game"><div className="game-progress">الأسطر الصحيحة: {gameSelected.length} / {gameOptions.length}</div><div className="game-options">{gameOptions.map((piece) => { const selected = gameSelected.includes(piece.id); return <button type="button" key={piece.id} className={"game-piece" + (selected ? " game-piece-selected" : "")} onClick={() => chooseGamePiece(piece.id)} disabled={selected || gameWon}><span>{selected ? "✓" : "↕"}</span><code>{piece.line}</code></button>; })}</div>{gameMessage && <p className={gameWon ? "status success" : "status"} role="status">{gameMessage}</p>}</div>}</article>
+        <article className="panel lesson-stage game-stage">
+          <span className="stage-label">المرحلة 4 · العب</span>
+          <h2>مركز الألعاب البرمجية</h2>
+          <p>اختر طريقة اللعب التي تناسبك: أصلح خطأً في الكود، رتّب الأجزاء بالسحب، أو اختبر فهمك بسؤال متعدد الخيارات.</p>
+          <div className="game-mode-tabs" role="tablist" aria-label="أنماط الألعاب">
+            <button type="button" role="tab" aria-selected={gameMode === "fix"} className={gameMode === "fix" ? "game-mode-tab active" : "game-mode-tab"} onClick={() => { setGameMode("fix"); setFixCode(makeBrokenCode(lesson.example)); setFixFeedback(""); }}>🛠️ تصحيح الكود</button>
+            <button type="button" role="tab" aria-selected={gameMode === "drag"} className={gameMode === "drag" ? "game-mode-tab active" : "game-mode-tab"} onClick={() => { setGameMode("drag"); setDragPieces([...createGamePieces(exampleLines, lesson.example, trackKey)].reverse()); setDragWon(false); setDragFeedback(""); }}>↕️ السحب والترتيب</button>
+            <button type="button" role="tab" aria-selected={gameMode === "quiz"} className={gameMode === "quiz" ? "game-mode-tab active" : "game-mode-tab"} onClick={() => { setGameMode("quiz"); setQuizChoice(null); setQuizChecked(false); }}>✦ اختيار من متعدد</button>
+          </div>
+
+          {gameMode === "fix" && <div className="game-panel-content">
+            <div className="game-instruction"><span>01</span><div><strong>مهمة إصلاح العطل</strong><p>أدخلنا خطأً صغيرًا في المثال. أصلحه ثم تحقق من الحل.</p></div></div>
+            <label htmlFor="fix-code-editor" className="editor-label">الكود الذي يحتاج إلى إصلاح</label>
+            <textarea id="fix-code-editor" className="lesson-editor game-fix-editor" value={fixCode} spellCheck={false} onChange={(event) => { setFixCode(event.target.value); setFixFeedback(""); }} />
+            <div className="editor-actions"><button type="button" className="button button-primary" onClick={checkFixCode}>تحقق من التصحيح</button><button type="button" className="button button-ghost" onClick={() => { setFixCode(makeBrokenCode(lesson.example)); setFixFeedback(""); }}>إعادة ضبط الخطأ</button></div>
+            {fixFeedback && <p className={fixCode.replace(/\\s+/g, "") === lesson.example.replace(/\\s+/g, "") ? "status success" : "status"} role="status">{fixFeedback}</p>}
+          </div>}
+
+          {gameMode === "drag" && <div className="game-panel-content">
+            <div className="game-instruction"><span>02</span><div><strong>رتّب أجزاء المثال</strong><p>اسحب كل سطر إلى موضعه. ويمكنك استخدام الأسهم بجوار السطر للتحريك بدقة.</p></div></div>
+            <div className="drag-code-list">
+              {dragPieces.map((piece, index) => <div key={piece.id} className={"drag-code-piece" + (draggedId === piece.id ? " is-dragging" : "")} draggable={!dragWon} onDragStart={() => setDraggedId(piece.id)} onDragOver={(event) => event.preventDefault()} onDrop={() => dropDragPiece(piece.id)} onDragEnd={() => setDraggedId(null)}>
+                <span className="drag-grip" aria-hidden="true">⠿</span><span className="drag-position">{index + 1}</span><code>{piece.line}</code>
+                <span className="drag-move-buttons"><button type="button" aria-label="تحريك السطر للأعلى" disabled={index === 0 || dragWon} onClick={() => moveDragPiece(piece.id, -1)}>↑</button><button type="button" aria-label="تحريك السطر للأسفل" disabled={index === dragPieces.length - 1 || dragWon} onClick={() => moveDragPiece(piece.id, 1)}>↓</button></span>
+              </div>)}
+            </div>
+            <div className="editor-actions"><button type="button" className="button button-primary" onClick={checkDragOrder} disabled={dragWon}>تحقق من الترتيب</button><button type="button" className="button button-ghost" onClick={() => { setDragPieces([...createGamePieces(exampleLines, lesson.example, trackKey)].reverse()); setDragWon(false); setDragFeedback(""); }}>إعادة الترتيب</button></div>
+            {dragFeedback && <p className={dragWon ? "status success" : "status"} role="status">{dragFeedback}</p>}
+          </div>}
+
+          {gameMode === "quiz" && <div className="game-panel-content">
+            <div className="game-instruction"><span>03</span><div><strong>اختبر فهمك</strong><p>اختر إجابة واحدة ثم اعرض نتيجة المحاولة.</p></div></div>
+            <h3 className="game-question">{lesson.question}</h3>
+            <div className="game-quiz-options">
+              {quizOptions.map((option, index) => <button type="button" key={option.text} className={"game-quiz-option" + (quizChoice === index ? " chosen" : "") + (quizChecked && option.correct ? " answer-correct" : "") + (quizChecked && quizChoice === index && !option.correct ? " answer-wrong" : "")} onClick={() => { if (!quizChecked) setQuizChoice(index); }} disabled={quizChecked}><span>{["A", "B", "C", "D"][index]}</span>{option.text}</button>)}
+            </div>
+            <div className="editor-actions"><button type="button" className="button button-primary" onClick={checkQuiz} disabled={quizChoice === null || quizChecked}>تحقق من الإجابة</button><button type="button" className="button button-ghost" onClick={() => { setQuizChoice(null); setQuizChecked(false); }}>محاولة جديدة</button></div>
+            {quizChecked && <p className={quizOptions[quizChoice ?? -1]?.correct ? "status success" : "status"} role="status">{quizOptions[quizChoice ?? -1]?.correct ? "إجابة صحيحة! " + lesson.answer : "ليست الإجابة المطلوبة. راجع المفهوم ثم حاول مجددًا. " + lesson.answer}</p>}
+          </div>}
+        </article>
 
         <article className="panel lesson-stage"><span className="stage-label">المرحلة 5 · أتقن</span><h2>التحدي النهائي</h2><p>{lesson.challenge}</p><div className="mastery-question"><strong>سؤال المراجعة</strong><p>{lesson.question}</p><details><summary>إظهار الإجابة والتفسير</summary><p>{lesson.answer}</p></details></div><button className="text-link recovery-toggle" onClick={() => setShowRecovery((value) => !value)}>{showRecovery ? "إخفاء خطة المراجعة" : "احتجت إلى مساعدة؟ افتح خطة المراجعة"}</button>{showRecovery && <div className="hint-box"><strong>خطة معالجة الخطأ</strong><p>{lesson.recovery}</p></div>}{mastered && <div className="status success" role="status">✓ هذا الدرس متقن ومحفوظ في تقدمك.</div>}{mastered && next && <Link className="button button-primary next-lesson" href={"/learn/" + trackKey + "/" + next.slug}>افتح الدرس التالي: {next.title} ↗</Link>}{mastered && !next && <div className="status success">أكملت الجزيرة! {trackKey !== "javascript" ? <Link className="text-link" href={trackKey === "html" ? "/learn/css" : "/learn/javascript"}>افتح الجزيرة التالية ↗</Link> : "أنهيت المسارات الثلاثة. راجع تقدمك وابدأ مشروعًا مستقلًا."}</div>}</article>
       </div>
