@@ -14,6 +14,7 @@ const cssLessons = [
   { id: "stacknova-css-colors", title: "الخلفيات والحدود", description: "أضف خلفية وحدودًا للبطاقات.", href: "/learn/css/colors" },
   { id: "stacknova-css-box-model", title: "نموذج الصندوق", description: "طبّق margin وpadding.", href: "/learn/css/box-model" },
   { id: "stacknova-css-flexbox", title: "تخطيط Flexbox", description: "رتّب العناصر ووزّع المسافات.", href: "/learn/css/flexbox" },
+  { id: "stacknova-css-responsive", title: "التصميم المتجاوب", description: "حسّن التنسيق على الهاتف باستخدام Media Queries.", href: "/learn/css/responsive" },
   { id: "stacknova-css-mini-project", title: "مشروع بطاقة تعريفية", description: "اجمع خصائص CSS في مشروع صغير.", href: "/learn/css/mini-project" },
 ];
 const allLessons = [...htmlLessons, ...cssLessons];

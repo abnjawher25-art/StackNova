@@ -56,6 +56,16 @@ const lessons: Record<string, CssLesson> = {
     success: "رائع! استخدمت Flexbox لتخطيط العناصر.",
     hint: "جرّب center أو space-between أو flex-start كقيمة لـ justify-content."
   },
+  responsive: {
+    title: "التصميم المتجاوب",
+    intro: "تساعد Media Queries على تغيير التنسيق حسب عرض الشاشة، حتى تكون الصفحة مريحة على الهاتف والحاسوب.",
+    goal: "اجعل البطاقة أصغر على الشاشات الضيقة.",
+    starter: ".profile-card {\n  max-width: 560px;\n  margin: 16px auto;\n}\n@media (max-width: 600px) {\n  .profile-card {\n    padding: 12px;\n    margin: 8px;\n  }\n  h1 {\n    font-size: 18px;\n  }\n}",
+    checklist: ["أضف قاعدة @media (max-width: 600px).", "غيّر padding داخلها.", "عدّل حجم العنوان داخل الشاشة الصغيرة."],
+    validate: (code) => /@media\s*\(\s*max-width\s*:\s*600px\s*\)/i.test(code) && /padding\s*:\s*\d+px/i.test(code) && /font-size\s*:\s*\d+px/i.test(code),
+    success: "أحسنت! استخدمت Media Query لتحسين العرض على الهاتف.",
+    hint: "اكتب قواعد الشاشات الصغيرة داخل أقواس @media."
+  },
   "mini-project": {
     title: "مشروع بطاقة تعريفية",
     intro: "اجمع ما تعلّمته لتصميم بطاقة صغيرة تحتوي على عنوان ووصف وزر.",
