@@ -163,7 +163,7 @@ export default function HomePage() {
         </section>
 
         <section className="section">
-          <div className="container"><div className="cta"><div><h2>{copy.ctaTitle}</h2><p>{copy.ctaDesc}</p></div><Link className="button button-primary" href="/learn/html">{copy.start} ↗</Link><Link className="button button-ghost" href="/projects/portfolio">{english ? "Build a portfolio" : "جرّب المشروع النهائي"} ↗</Link></div></div>
+          <div className="container"><div className="cta"><div><h2>{copy.ctaTitle}</h2><p>{copy.ctaDesc}</p></div><Link className="button button-primary" href="/learn/html">{copy.start} ↗</Link><Link className="button button-ghost" href="/projects/portfolio">{english ? "Build a portfolio" : "جرّب المشروع النهائي"} ↗</Link><Link className="button button-ghost" href="/practice">{english ? "Test your skills" : "اختبر معلوماتك"} ↗</Link></div></div>
         </section>
       </main>
       <footer className="footer"><div className="container" style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}><span>© {new Date().getFullYear()} StackNova</span><span>{copy.footer}</span></div></footer>
