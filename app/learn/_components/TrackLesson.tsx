@@ -154,22 +154,6 @@ export default function TrackLesson({ trackKey }: Props) {
     return source + ")";
   }
 
-  function startGame() {
-    const pieces = createGamePieces(exampleLines, lesson?.example ?? "", trackKey);
-    setGameOptions([...pieces].reverse());
-    setGameSelected([]);
-    setGameWon(false);
-    setGameMessage("");
-    setFixCode(makeBrokenCode(lesson?.example ?? ""));
-    setFixFeedback("");
-    setDragPieces([...pieces].reverse());
-    setDraggedId(null);
-    setDragFeedback("");
-    setDragWon(false);
-    setQuizChoice(null);
-    setQuizChecked(false);
-  }
-
   function checkFixCode() {
     if (!lesson) return;
     const normalize = (value: string) => value.replace(/\s+/g, "");
